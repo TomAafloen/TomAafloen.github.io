@@ -1,0 +1,1 @@
+((Get-Content -path LinkCollection.htm -Raw) -replace 'color:#954F72;','color:blue;') | Set-Content -Path LinkCollection.htm
