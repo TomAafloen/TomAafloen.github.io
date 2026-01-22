@@ -1,0 +1,308 @@
+{
+  "about": {
+    "browser": "chrome",
+    "version": "22.0.1"
+  },
+  "showall": false,
+  "lang": "sv",
+  "dark": "system",
+  "favicon": "",
+  "tabtitle": "",
+  "greeting": "Tom",
+  "greetingsize": "3.1",
+  "greetingsmode": "auto",
+  "pagegap": 1,
+  "pagewidth": 900,
+  "time": true,
+  "main": true,
+  "dateformat": "auto",
+  "quicklinks": true,
+  "textShadow": 0.125,
+  "announcements": "all",
+  "review": -1,
+  "css": "",
+  "hide": {
+    "settingsicon": true,
+    "weatherdesc": false,
+    "weathericon": false
+  },
+  "linkstyle": "medium",
+  "linktitles": false,
+  "linkbackgrounds": false,
+  "linknewtab": false,
+  "linksrow": "6",
+  "linkiconradius": "1",
+  "linkgroups": {
+    "on": false,
+    "selected": "Links",
+    "groups": [
+      "Links"
+    ],
+    "pinned": [],
+    "synced": []
+  },
+  "backgrounds": {
+    "type": "images",
+    "fadein": 600,
+    "blur": 11,
+    "bright": 0.8,
+    "frequency": "tabs",
+    "color": "#185A63",
+    "urls": "",
+    "images": "bonjourr-images-daylight",
+    "videos": "bonjourr-videos-daylight",
+    "mute": true,
+    "queries": {},
+    "texture": {
+      "type": "none"
+    }
+  },
+  "clock": {
+    "size": 1.25,
+    "ampm": false,
+    "analog": false,
+    "seconds": false,
+    "ampmlabel": false,
+    "ampmposition": "top-left",
+    "worldclocks": false,
+    "timezone": "auto"
+  },
+  "worldclocks": [],
+  "analogstyle": {
+    "face": "none",
+    "hands": "modern",
+    "shape": "round",
+    "border": "#ffff",
+    "background": "#fff2"
+  },
+  "weather": {
+    "city": "karlstad",
+    "unit": "metric",
+    "provider": "",
+    "moreinfo": "msnw",
+    "forecast": "auto",
+    "temperature": "actual",
+    "geolocation": "precise"
+  },
+  "greetingscustom": {
+    "morning": "",
+    "afternoon": "",
+    "evening": "",
+    "night": ""
+  },
+  "notes": {
+    "on": false,
+    "width": 40,
+    "opacity": 0.1,
+    "align": "left",
+    "text": "## Ok\n\n## Edit this note!\n\n- rom\n\n-  -rom\n\n- \n\n[ ] With markdown titles, lists, and checkboxes\n\n[ ] Learn more on https://bonjourr.fr/docs/overview#notes"
+  },
+  "searchbar": {
+    "on": false,
+    "background": "#fff3",
+    "width": 30,
+    "opacity": 0.1,
+    "newtab": true,
+    "suggestions": true,
+    "engine": "google",
+    "request": "",
+    "placeholder": "Google"
+  },
+  "quotes": {
+    "on": false,
+    "type": "classic",
+    "frequency": "day",
+    "author": false,
+    "last": 1769077325499
+  },
+  "pomodoro": {
+    "on": false,
+    "mode": "pomodoro",
+    "pause": 0,
+    "end": 0,
+    "timeFor": {
+      "pomodoro": 1500,
+      "break": 300,
+      "longbreak": 1200
+    },
+    "focus": false,
+    "sound": true,
+    "history": []
+  },
+  "font": {
+    "size": "15",
+    "family": "",
+    "system": true,
+    "weightlist": [],
+    "weight": "400"
+  },
+  "supporters": {
+    "enabled": false
+  },
+  "move": {
+    "selection": "single",
+    "layouts": {
+      "single": {
+        "grid": [
+          [
+            "time"
+          ],
+          [
+            "main"
+          ],
+          [
+            "quicklinks"
+          ]
+        ],
+        "items": {
+          "quicklinks": {
+            "text": "",
+            "box": "center"
+          }
+        }
+      }
+    }
+  },
+  "linkscngigh": {
+    "_id": "linkscngigh",
+    "icon": {
+      "type": "url",
+      "value": "https://az-icons.com/export/icons/6ae48fcbb84214de68fcba2540913934.svg"
+    },
+    "order": 6,
+    "parent": "Links",
+    "title": "Azure Portal",
+    "url": "https://portal.azure.com/#home"
+  },
+  "linkseqmqcr": {
+    "_id": "linkseqmqcr",
+    "icon": {
+      "type": "url",
+      "value": "https://az-icons.com/export/icons/e13094e5969e42033230a17a936bf10d.svg"
+    },
+    "order": 3,
+    "parent": "Links",
+    "title": "Entra EntApps",
+    "url": "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview"
+  },
+  "linksfgmckl": {
+    "_id": "linksfgmckl",
+    "order": 10,
+    "parent": "Links",
+    "title": "XL",
+    "url": "https://www.xledger.net/f/timesheet?_r_menu_command=4926"
+  },
+  "linksfgnlrd": {
+    "_id": "linksfgnlrd",
+    "order": 9,
+    "parent": "Links",
+    "title": "SecID",
+    "url": "https://github.com/orgs/OnevinnAB/projects/10/views/4?groupedBy%5BcolumnId%5D=Assignees"
+  },
+  "linksggapmd": {
+    "_id": "linksggapmd",
+    "icon": {
+      "type": "url",
+      "value": "https://az-icons.com/export/icons/06c2a09f4135f9abddcf315efd9b90ef.svg"
+    },
+    "order": 1,
+    "parent": "Links",
+    "title": "Entra Users",
+    "url": "https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/AllUsers/menuId/"
+  },
+  "linksgocikp": {
+    "_id": "linksgocikp",
+    "icon": {
+      "type": "url",
+      "value": "https://az-icons.com/export/icons/5d26ca8674678da00f04ac96ede8d498.svg"
+    },
+    "order": 2,
+    "parent": "Links",
+    "title": "Entra Groups",
+    "url": "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/GroupsManagementMenuBlade/~/AllGroups/menuId/Overview"
+  },
+  "linksgpqmqc": {
+    "_id": "linksgpqmqc",
+    "icon": {
+      "type": "url",
+      "value": "https://play-lh.googleusercontent.com/NPiSdptTujrZYhm_srG6sOJi8LdtTEQtvHwu7InIucHeKSPw9SMsCw-f5v-E2SJ93lriW1wGRMU8Nx0DbkmmaA=w240-h480-rw"
+    },
+    "order": 8,
+    "parent": "Links",
+    "title": "Defender",
+    "url": "https://security.microsoft.com/"
+  },
+  "linkshmogab": {
+    "_id": "linkshmogab",
+    "icon": {
+      "type": "url",
+      "value": "https://did.tomdemo.se/Icons/PIM-Icon.svg"
+    },
+    "order": 13,
+    "parent": "Links",
+    "title": "PIM",
+    "url": "https://portal.azure.com/#blade/Microsoft_Azure_PIMCommon/ActivationMenuBlade/aadmigratedroles"
+  },
+  "linksimooje": {
+    "_id": "linksimooje",
+    "icon": {
+      "type": "url",
+      "value": "https://play-lh.googleusercontent.com/W3VsSBWwRkgu3VU4vz0AHItfbhGKlYbgqLXJAihtr-QYgMO1A3g9_eyrAbqOxANa7qc"
+    },
+    "order": 7,
+    "parent": "Links",
+    "title": "M365 Admin",
+    "url": "https://admin.cloud.microsoft/"
+  },
+  "linkslhjlkg": {
+    "_id": "linkslhjlkg",
+    "icon": {
+      "type": "url",
+      "value": "https://vld-bc.com/uploads/Graph_API_915d631c17.svg"
+    },
+    "order": 11,
+    "parent": "Links",
+    "title": "Graph Explorer",
+    "url": "https://developer.microsoft.com/en-us/graph/graph-explorer"
+  },
+  "linksllcbmc": {
+    "_id": "linksllcbmc",
+    "icon": {
+      "type": "url",
+      "value": "https://az-icons.com/export/icons/232997b804dcb2f462fff392c28d31ca.svg"
+    },
+    "order": 5,
+    "parent": "Links",
+    "title": "Entra CA",
+    "url": "https://entra.microsoft.com/?culture=en-us&country=us#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies/menuId//fromNav/Identity"
+  },
+  "linksneelbq": {
+    "_id": "linksneelbq",
+    "order": 12,
+    "parent": "Links",
+    "title": "Clip",
+    "url": "https://live-clipboard.netlify.app/xd9SM"
+  },
+  "linkspdmiac": {
+    "_id": "linkspdmiac",
+    "icon": {
+      "type": "url",
+      "value": "https://az-icons.com/export/icons/996e588fa2b5b4306aa39f64399c74c1.svg"
+    },
+    "order": 4,
+    "parent": "Links",
+    "title": "Entra AppReg",
+    "url": "https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM"
+  },
+  "linksrirnqb": {
+    "_id": "linksrirnqb",
+    "icon": {
+      "type": "url",
+      "value": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Microsoft_Entra_ID_color_icon.svg"
+    },
+    "order": 0,
+    "parent": "Links",
+    "title": "Entra ID Home",
+    "url": "https://entra.microsoft.com/?culture=en-us&country=us#home"
+  }
+}
