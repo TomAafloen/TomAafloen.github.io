@@ -113,7 +113,7 @@
     "type": "classic",
     "frequency": "day",
     "author": false,
-    "last": 1769077325499
+    "last": 1771579237954
   },
   "pomodoro": {
     "on": false,
@@ -187,6 +187,10 @@
   },
   "linksfgmckl": {
     "_id": "linksfgmckl",
+    "icon": {
+      "type": "url",
+      "value": "https://did.tomdemo.se/XLedgerLogo.png"
+    },
     "order": 10,
     "parent": "Links",
     "title": "XL",
