@@ -46,7 +46,6 @@ const links = [
   {title: 'Graph Explorer', url: 'https://developer.microsoft.com/en-us/graph/graph-explorer', icon: 'https://vld-bc.com/uploads/Graph_API_915d631c17.svg'},
   {title: 'Graph Permissions', url: 'https://learn.microsoft.com/en-us/graph/permissions-reference', icon: 'https://www.drupal.org/files/project-images/Graph%20API%20logo.png'},
   {title: 'XL', url: 'https://www.xledger.net/auth/init-signin/azure', icon: 'https://did.tomdemo.se/XLedgerLogo.png'},
-  {title: 'Clip', url: 'https://live-clipboard.netlify.app/xd9SM', icon: 'https://live-clipboard.netlify.app/assets/clipboard-logo.webp'},
   {title: 'PIM', url: 'https://portal.azure.com/#blade/Microsoft_Azure_PIMCommon/ActivationMenuBlade/aadmigratedroles', icon: 'https://did.tomdemo.se/Icons/PIM-Icon.svg'},
 ];
 
