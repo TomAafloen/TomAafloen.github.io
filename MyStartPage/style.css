@@ -1,0 +1,112 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --text-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.125);
+  --bg-fallback: #185a63;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  background: var(--bg-fallback);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Background image layer */
+#bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(11px) brightness(0.8);
+  transform: scale(1.05); /* prevent blur edges from showing */
+  opacity: 0;
+  transition: opacity 600ms ease;
+  z-index: -1;
+}
+
+#bg.loaded {
+  opacity: 1;
+}
+
+/* Main layout — vertical stack, centered */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+/* Clock */
+#clock {
+  font-size: 5rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-shadow: var(--text-shadow);
+  line-height: 1;
+}
+
+/* Greeting */
+#greeting {
+  font-size: 3.1rem;
+  font-weight: 400;
+  text-shadow: var(--text-shadow);
+  line-height: 1.2;
+}
+
+/* Links grid — 6 per row */
+#links {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.link-item:hover {
+  transform: scale(1.08);
+  opacity: 0.85;
+}
+
+.link-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%; /* linkiconradius: 1 = fully round */
+  overflow: hidden;
+  /* background: rgba(255, 255, 255, 0.15); */
+  /* backdrop-filter: blur(4px); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.link-icon img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+/* Fallback icon — first letter */
+.link-icon-letter {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
