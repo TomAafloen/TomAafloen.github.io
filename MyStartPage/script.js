@@ -12,9 +12,11 @@ updateClock();
 function setGreeting() {
   const hour = new Date().getHours();
   let salut;
-  if      (hour >= 5  && hour < 12) salut = 'Godmorgon';
-  else if (hour >= 12 && hour < 18) salut = 'God eftermiddag';
-  else if (hour >= 18 && hour < 23) salut = 'God kväll';
+  if      (hour >=6  && hour < 10) salut = 'Godmorgon';
+  else if (hour >= 10 && hour < 12) salut = 'God förmiddag';
+  else if (hour >= 12 && hour < 13) salut = 'Nu är det lunch';
+  else if (hour >= 13 && hour < 17) salut = 'God eftermiddag';
+  else if (hour >= 17 && hour < 23) salut = 'God kväll';
   else                              salut = 'God natt';
   document.getElementById('greeting').textContent = `${salut}, Tom`;
 }
