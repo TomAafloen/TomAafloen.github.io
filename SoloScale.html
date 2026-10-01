@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f6ef">
+  <title>SoloScale | See the scale</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f6ef;
+      --white: #fffefa;
+      --ink: #182c27;
+      --muted: #66756d;
+      --line: #d5ddd4;
+      --green: #c9ed68;
+      --green-dark: #466b3d;
+      --red: #e45e49;
+      --amber: #e9a23b;
+      --board: #dce3d9;
+      --shadow: 0 12px 30px #1931280b, 0 2px 5px #1931280c;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.5 "Trebuchet MS", "Segoe UI", sans-serif; }
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; max-width: 1320px; margin: auto; padding: 22px 34px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; gap: 11px; align-items: center; font-weight: 800; letter-spacing: .2px; }
+    .brand-mark { display: grid; width: 34px; aspect-ratio: 1; place-items: center; border-radius: 50%; background: var(--ink); color: var(--green); font: 700 16px Georgia, serif; }
+    .top-note { color: var(--muted); font-size: 12px; letter-spacing: 1.3px; text-transform: uppercase; }
+    main { max-width: 1320px; margin: auto; padding: 44px 34px 70px; }
+    .intro { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+    .eyebrow { margin: 0 0 10px; color: var(--green-dark); font-size: 11px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; }
+    h1 { max-width: 720px; margin: 0; font: 500 clamp(38px, 5vw, 62px)/1.02 Georgia, "Times New Roman", serif; letter-spacing: 0; }
+    h1 em { color: var(--green-dark); font-weight: 500; }
+    .intro-note { max-width: 220px; margin: 0 0 4px; color: var(--muted); font-size: 14px; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: 8px; background: var(--white); box-shadow: var(--shadow); }
+    .controls { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(180px, .7fr) auto; gap: 0 18px; align-items: start; padding: 20px 23px; }
+    .section-kicker { display: flex; align-items: center; gap: 9px; margin: 0 0 18px; font-size: 14px; font-weight: 800; }
+    .controls .section-kicker, .controls .error { grid-column: 1 / -1; }
+    .section-kicker span { display: grid; width: 24px; aspect-ratio: 1; place-items: center; border-radius: 50%; background: var(--green); font: 700 12px Georgia, serif; }
+    .field { display: grid; gap: 7px; margin-bottom: 12px; }
+    label { font-size: 12px; font-weight: 800; }
+    .hint { color: var(--muted); font-size: 12px; }
+    textarea, select, input[type="number"] { width: 100%; min-height: 43px; border: 1px solid var(--line); border-radius: 5px; background: #fff; padding: 10px 12px; outline: none; }
+    textarea { min-height: 80px; resize: vertical; font: 17px/1.6 Georgia, serif; }
+    textarea:focus, select:focus, input:focus-visible, button:focus-visible { outline: 3px solid #a4c7538c; outline-offset: 2px; }
+    .field-row { display: grid; grid-template-columns: 1fr 92px; gap: 12px; }
+    .actions { display: grid; gap: 9px; margin-top: 0; }
+    .primary, .secondary { min-height: 46px; border: 0; border-radius: 5px; padding: 10px 15px; font-weight: 800; transition: transform .15s ease, background-color .15s ease; }
+    .primary { background: var(--ink); color: white; }
+    .primary:hover { transform: translateY(-1px); background: #29483d; }
+    .secondary { border: 1px solid var(--line); background: #f4f6f1; }
+    .secondary:hover { background: #e9eee5; }
+    .error { min-height: 18px; margin: 10px 0 0; color: #ae382a; font-size: 12px; }
+    .output { min-width: 0; }
+    .board-panel { overflow: hidden; }
+    .board-head { display: flex; justify-content: space-between; align-items: start; gap: 14px; padding: 20px 22px 15px; }
+    h2 { margin: 0; font: 700 19px Georgia, "Times New Roman", serif; }
+    .board-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+    .badge { flex: none; border-radius: 20px; background: #eff5de; color: var(--green-dark); padding: 5px 10px; font-size: 11px; font-weight: 800; }
+    .board-scroll { overflow-x: auto; padding: 0 18px 19px; scrollbar-color: #b8c6b2 transparent; }
+    .fretboard { position: relative; width: 90%; min-width: 774px; margin-inline: auto; padding: 12px 12px 12px 0; border-radius: 5px; background: var(--board); }
+    .neck-row { display: grid; height: 44px; }
+    .string-name { display: grid; place-items: center; color: var(--muted); font: 700 12px Georgia, serif; }
+    .fret-cell { position: relative; display: grid; place-items: center; border-right: 2px solid #aab5a9; background: linear-gradient(to bottom, transparent calc(50% - 1px), #929f96 calc(50% - 1px), #929f96 calc(50% + 1px), transparent calc(50% + 1px)); }
+    .fret-cell.nut-fret { border-right: 6px solid #65766c; box-shadow: inset -2px 0 0 #65766c; }
+    .board-inlay { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: rgba(15, 19, 18, 0.88); transform: translate(-50%, -50%); z-index: 1; pointer-events: none; }
+    .note-marker { position: relative; z-index: 2; display: grid; width: 30px; height: 30px; place-items: center; border: 2px solid var(--white); border-radius: 50%; color: white; box-shadow: 0 2px 5px #182c2730; font-size: 11px; font-weight: 800; }
+    .note-marker.scale { border: 1.5px solid #8b9a90; background: var(--white); color: var(--ink); box-shadow: none; }
+    .note-marker.chord { background: var(--ink); }
+    .note-marker.root { background: var(--red); }
+    .note-marker.changed { box-shadow: 0 0 0 3px var(--amber); }
+    .fret-numbers { display: grid; grid-template-columns: 38px repeat(16, minmax(48px, 1fr)); width: 90%; min-width: 774px; margin-inline: auto; padding: 4px 12px 0 0; color: var(--muted); text-align: center; font-size: 10px; }
+    .fret-numbers .inlay { color: var(--ink); font-weight: 800; }
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 12px 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 7px; }
+    .legend-dot { width: 11px; aspect-ratio: 1; border-radius: 50%; background: var(--ink); }
+    .legend-dot.root { background: var(--red); }
+    .legend-dot.scale { border: 1.5px solid #8b9a90; background: var(--white); }
+    .legend-dot.changed { border: 1.5px solid #8b9a90; background: var(--white); box-shadow: 0 0 0 2.5px var(--amber); }
+    .legend-spacer { flex: 1; }
+    .bars { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 22px 16px; }
+    .bar-tab { min-width: 78px; border: 1px solid var(--line); border-radius: 6px; background: #f8f9f5; padding: 7px 12px; text-align: left; }
+    .bar-tab strong { display: block; font: 700 16px/1.2 Georgia, serif; }
+    .bar-tab small { display: block; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .bar-tab.outside { border-color: var(--amber); background: #fdf3dc; }
+    .bar-tab:hover { border-color: #9fae9f; }
+    .bar-tab[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: white; }
+    .bar-tab[aria-pressed="true"] small { color: #cfd8d2; }
+    .bar-tab.outside[aria-pressed="true"] { box-shadow: inset 0 -3px 0 var(--amber); }
+    .bar-info { min-height: 78px; margin: 0; padding: 0 22px 16px; font-size: 14px; line-height: 1.5; }
+    .bar-info b { color: #a86a0c; }
+    footer { display: flex; justify-content: space-between; gap: 20px; max-width: 1320px; margin: auto; padding: 0 34px 22px; color: var(--muted); font-size: 11px; }
+    @keyframes pop-in { from { opacity: 0; transform: scale(.65); } to { opacity: 1; transform: scale(1); } }
+    @media (max-width: 820px) {
+      .controls { grid-template-columns: minmax(0, 1fr) minmax(180px, .8fr); gap: 0 16px; }
+      .controls .actions { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .intro { align-items: start; flex-direction: column; }
+      .intro-note { max-width: 400px; }
+    }
+    /* Phone in landscape: live mode. Setup sits above; the board + bar buttons fill one screen. */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .topbar, .intro, footer, .board-head, .legend { display: none; }
+      main { padding: 8px max(8px, env(safe-area-inset-right)) 8px max(8px, env(safe-area-inset-left)); }
+      .workspace { gap: 8px; }
+      .controls { grid-template-columns: minmax(0, 1.5fr) minmax(150px, .7fr) auto; padding: 12px 14px; }
+      .controls .actions { grid-column: auto; grid-template-columns: 1fr; }
+      .controls .section-kicker { margin-bottom: 8px; }
+      .hint { display: none; }
+      textarea { min-height: 43px; }
+      .output { min-height: 100svh; scroll-margin-top: 0; }
+      .board-panel { display: flex; flex-direction: column; min-height: calc(100svh - 16px); }
+      .bars { flex-wrap: wrap; gap: 6px; padding: 8px 8px 6px; }
+      .bar-tab { flex: 1 1 0; min-width: 56px; min-height: 48px; padding: 5px 8px; text-align: center; }
+      .bar-tab strong { font-size: 17px; }
+      .bar-tab small { font-size: 10px; overflow: hidden; text-overflow: ellipsis; }
+      .bar-info { min-height: 38px; padding: 0 10px 4px; font-size: 12px; line-height: 1.35; }
+      .board-scroll { flex: 1; padding: 0 4px 6px; overflow: hidden; }
+      .fretboard, .fret-numbers { width: 100%; min-width: 0; }
+      .fretboard { padding: 6px 6px 6px 0; }
+      .neck-row { height: calc((100svh - 190px) / 6); min-height: 26px; max-height: 40px; }
+      .note-marker { width: 24px; height: 24px; font-size: 10px; }
+      .fret-numbers { padding-right: 6px; }
+    }
+    @media (max-width: 540px) {
+      .topbar { padding: 16px 18px; }
+      main { padding: 32px 16px 48px; }
+      .top-note { font-size: 9px; letter-spacing: .8px; }
+      h1 { font-size: 43px; }
+      .controls { display: block; padding: 18px; }
+      .field-row { grid-template-columns: 1fr 82px; }
+      .board-head { padding: 17px 16px 12px; }
+      .board-scroll { padding-right: 10px; padding-left: 10px; }
+      .legend { padding: 12px 16px; }
+      .bars, .bar-info { padding-right: 16px; padding-left: 16px; }
+      footer { padding: 0 16px 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">S</span> SoloScale</div>
+    <div class="top-note">A little less guessing. A little more playing.</div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Your progression, mapped</p>
+        <h1 id="page-title">See the scale<br><em>behind every chord.</em></h1>
+      </div>
+      <p class="intro-note">Step through the bars. When a chord is borrowed, the fretboard switches to the scale it comes from.</p>
+    </section>
+
+    <div class="workspace">
+      <section class="panel controls" aria-labelledby="setup-title">
+        <h2 class="section-kicker" id="setup-title"><span>1</span> Set up your changes</h2>
+        <div class="field">
+          <label for="progression">Chord progression</label>
+          <textarea id="progression" spellcheck="false" aria-describedby="progression-hint">Em G D Em C C</textarea>
+          <span class="hint" id="progression-hint">One chord per bar, separated by spaces or bars. Supports e.g. G, Em, D7, Cmaj7, Bm7b5, F#dim, A/C#.</span>
+        </div>
+        <div class="field">
+          <label for="key-select">Key</label>
+          <select id="key-select"><option value="auto">Auto-detect</option></select>
+        </div>
+        <div class="actions">
+          <button class="primary" id="generate">Show on fretboard <span aria-hidden="true">↗</span></button>
+          <button class="secondary" id="example">Try another example</button>
+        </div>
+        <p class="error" id="error" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="output" aria-label="Scale visualization">
+        <div class="panel board-panel">
+          <div class="board-head">
+            <div>
+              <h2 id="view-title">Key</h2>
+              <p class="board-subtitle" id="board-subtitle">Standard tuning · 15 frets</p>
+            </div>
+            <span class="badge" id="key-badge"></span>
+          </div>
+          <div class="bars" id="bars" role="toolbar" aria-label="Choose key overview or a bar"></div>
+          <p class="bar-info" id="bar-info" aria-live="polite"></p>
+          <div class="board-scroll" tabindex="0" aria-label="Scrollable guitar fretboard">
+            <div class="fretboard" id="fretboard" role="img" aria-label="Six string fretboard"></div>
+            <div class="fret-numbers" id="fret-numbers" aria-hidden="true"></div>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><i class="legend-dot root" aria-hidden="true"></i> Scale root</span>
+            <span class="legend-item"><i class="legend-dot" aria-hidden="true"></i> Chord tone</span>
+            <span class="legend-item"><i class="legend-dot scale" aria-hidden="true"></i> Scale note</span>
+            <span class="legend-item"><i class="legend-dot changed" aria-hidden="true"></i> Not in home key</span>
+            <span class="legend-spacer"></span>
+            <span>Use ← → to step through bars</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer><span>Standard tuning · E A D G B E</span><span>Made for the next time you pick up a guitar.</span></footer>
+
+  <script>
+    (() => {
+      const SHARP_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      const FLAT_NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+      const NOTE_VALUES = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+      const FRETS = 15;
+      const STRINGS = [
+        { name: "e", midi: 64 }, { name: "B", midi: 59 }, { name: "G", midi: 55 },
+        { name: "D", midi: 50 }, { name: "A", midi: 45 }, { name: "E", midi: 40 }
+      ];
+      const CHORD_TYPES = {
+        "": [0, 4, 7], maj: [0, 4, 7], M: [0, 4, 7],
+        m: [0, 3, 7], min: [0, 3, 7], "-": [0, 3, 7],
+        "7": [0, 4, 7, 10], maj7: [0, 4, 7, 11], M7: [0, 4, 7, 11],
+        m7: [0, 3, 7, 10], min7: [0, 3, 7, 10], "-7": [0, 3, 7, 10],
+        m7b5: [0, 3, 6, 10], "ø": [0, 3, 6, 10],
+        dim: [0, 3, 6], "°": [0, 3, 6], dim7: [0, 3, 6, 9], "°7": [0, 3, 6, 9],
+        aug: [0, 4, 8], "+": [0, 4, 8],
+        sus2: [0, 2, 7], sus4: [0, 5, 7], sus: [0, 5, 7], "7sus4": [0, 5, 7, 10],
+        "6": [0, 4, 7, 9], m6: [0, 3, 7, 9],
+        "9": [0, 4, 7, 10, 2], maj9: [0, 4, 7, 11, 2], m9: [0, 3, 7, 10, 2], add9: [0, 4, 7, 2],
+        "5": [0, 7]
+      };
+      const KEYS = {
+        major: { scale: [0, 2, 4, 5, 7, 9, 11], qualities: ["maj", "min", "min", "maj", "maj", "min", "dim"] },
+        minor: { scale: [0, 2, 3, 5, 7, 8, 10], qualities: ["min", "dim", "maj", "min", "min", "maj", "maj"] }
+      };
+      // offset = distance from the relative major's tonic; used for sharp/flat spelling.
+      const MODES = {
+        ionian: { steps: [0, 2, 4, 5, 7, 9, 11], name: "major", offset: 0 },
+        dorian: { steps: [0, 2, 3, 5, 7, 9, 10], name: "Dorian", offset: 2 },
+        phrygian: { steps: [0, 1, 3, 5, 7, 8, 10], name: "Phrygian", offset: 4 },
+        lydian: { steps: [0, 2, 4, 6, 7, 9, 11], name: "Lydian", offset: 5 },
+        mixolydian: { steps: [0, 2, 4, 5, 7, 9, 10], name: "Mixolydian", offset: 7 },
+        aeolian: { steps: [0, 2, 3, 5, 7, 8, 10], name: "minor", offset: 9 },
+        locrian: { steps: [0, 1, 3, 5, 6, 8, 10], name: "Locrian", offset: 11 },
+        harmonic: { steps: [0, 2, 3, 5, 7, 8, 11], name: "harmonic minor", minor: true },
+        melodic: { steps: [0, 2, 3, 5, 7, 9, 11], name: "melodic minor", minor: true },
+        wholetone: { steps: [0, 2, 4, 6, 8, 10], name: "whole tone" }
+      };
+      const HOME_MODE = { major: "ionian", minor: "aeolian" };
+      // Closest relatives of the home key first, so the simplest explanation wins.
+      const BORROW_ORDER = {
+        major: ["mixolydian", "aeolian", "dorian", "lydian", "harmonic", "phrygian", "melodic"],
+        minor: ["harmonic", "dorian", "ionian", "melodic", "phrygian", "mixolydian", "lydian"]
+      };
+      const NUMERALS = {
+        major: ["I", "♭II", "II", "♭III", "III", "IV", "♯IV", "V", "♭VI", "VI", "♭VII", "VII"],
+        minor: ["I", "♭II", "II", "III", "♯III", "IV", "♯IV", "V", "VI", "♯VI", "VII", "♯VII"]
+      };
+      const FLAT_KEYS = { major: [5, 10, 3, 8, 1], minor: [2, 7, 0, 5, 10, 3] };
+      const EXAMPLES = ["G | Em | C | Cm | G", "C | Bb | F | C", "C | Ab | Fm | C", "Dm7 | G7 | Cmaj7 | A7", "D | C | G | D", "Am | F | C | E7"];
+      const INLAYS = [3, 5, 7, 9, 12, 15];
+      const FRET_WIDTHS = [1.65, 1.5, 1.42, 1.34, 1.27, 1.2, 1.14, 1.08, 1.02, 0.97, 0.92, 0.88, 0.84, 0.8, 0.75, 0.72];
+      const progressionInput = document.querySelector("#progression");
+      const keySelect = document.querySelector("#key-select");
+      const fretboard = document.querySelector("#fretboard");
+      const barsEl = document.querySelector("#bars");
+      const errorEl = document.querySelector("#error");
+      let state = null;
+      let selected = 0;
+      let exampleIndex = 0;
+
+      function chordQuality(intervals) {
+        if (intervals.includes(4)) return intervals.includes(8) ? "aug" : "maj";
+        if (intervals.includes(3)) return intervals.includes(6) && !intervals.includes(7) ? "dim" : "min";
+        return null;
+      }
+
+      function parseChord(token) {
+        const match = token.match(/^([A-Ga-g])([#b]?)([^/]*)(?:\/[A-Ga-g][#b]?)?$/);
+        if (!match) return null;
+        const intervals = CHORD_TYPES[match[3]] ?? CHORD_TYPES[match[3].toLowerCase()];
+        if (!intervals) return null;
+        const offset = match[2] === "#" ? 1 : match[2] === "b" ? -1 : 0;
+        const root = (NOTE_VALUES[match[1].toUpperCase()] + offset + 12) % 12;
+        return {
+          label: token,
+          root,
+          quality: chordQuality(intervals),
+          // Root, 3rd, 5th and 7th define the chord; added 9ths are color only.
+          core: [...new Set(intervals.filter(i => i !== 2).map(i => (root + i) % 12))]
+        };
+      }
+
+      function detectKey(chords) {
+        let best;
+        for (let tonic = 0; tonic < 12; tonic += 1) {
+          for (const mode of ["major", "minor"]) {
+            const key = KEYS[mode];
+            const scalePcs = key.scale.map(i => (tonic + i) % 12);
+            const leadingTone = (tonic + 11) % 12;
+            let score = 0;
+            chords.forEach((chord, index) => {
+              const isFifth = chord.root === (tonic + 7) % 12;
+              // In minor, a major V only belongs to the key when it resolves to i.
+              const resolves = isFifth && chords[(index + 1) % chords.length].root === tonic;
+              chord.core.forEach(pc => {
+                score += scalePcs.includes(pc) || (mode === "minor" && resolves && pc === leadingTone) ? 1 : -2;
+              });
+              if (isFifth && chord.quality === "maj" && chords[index + 1]?.root === tonic) score += 3;
+              const degree = scalePcs.indexOf(chord.root);
+              const diatonic = degree >= 0 && (key.qualities[degree] === chord.quality || (mode === "minor" && degree === 4 && resolves && chord.quality === "maj"));
+              if (diatonic) score += 2;
+              const isTonicChord = chord.root === tonic && chord.quality === key.qualities[0];
+              if (isTonicChord && index === 0) score += 5;
+              if (isTonicChord && index === chords.length - 1) score += 4;
+            });
+            // Tie-breakers: favor the first chord as home, then major.
+            if (chords[0].root === tonic) score += 0.1;
+            if (mode === "major") score += 0.05;
+            if (!best || score > best.score) best = { tonic, mode, score };
+          }
+        }
+        return best;
+      }
+
+      const scalePcs = scale => MODES[scale.mode].steps.map(step => (scale.tonic + step) % 12);
+
+      function namesFor(scale) {
+        const mode = MODES[scale.mode];
+        let flats = false;
+        if (mode.minor) flats = FLAT_KEYS.minor.includes(scale.tonic);
+        else if (mode.offset !== undefined) flats = FLAT_KEYS.major.includes((scale.tonic - mode.offset + 12) % 12);
+        const names = [...(flats ? FLAT_NAMES : SHARP_NAMES)];
+        if (mode.steps.length === 7) {
+          // One letter per degree, so e.g. D harmonic minor gets C#, not Db.
+          const letters = "CDEFGAB";
+          const start = letters.indexOf(names[scale.tonic][0]);
+          mode.steps.forEach((step, i) => {
+            const pc = (scale.tonic + step) % 12;
+            const letter = letters[(start + i) % 7];
+            const accidental = { 0: "", 1: "#", 2: "##", 11: "b", 10: "bb" }[(pc - NOTE_VALUES[letter] + 12) % 12];
+            names[pc] = letter + accidental;
+          });
+        }
+        return names;
+      }
+
+      const scaleName = scale => `${namesFor(scale)[scale.tonic]} ${MODES[scale.mode].name}`;
+
+      function roman(root, quality, key) {
+        let numeral = NUMERALS[key.mode][(root - key.tonic + 12) % 12];
+        if (quality === "min" || quality === "dim") numeral = numeral.replace(/[IV]+/, m => m.toLowerCase());
+        if (quality === "dim") numeral += "°";
+        if (quality === "aug") numeral += "+";
+        return numeral;
+      }
+
+      function analyze(chord, key) {
+        const home = { tonic: key.tonic, mode: HOME_MODE[key.mode] };
+        const fits = scale => chord.core.every(pc => scalePcs(scale).includes(pc));
+        const numeral = roman(chord.root, chord.quality, key);
+        if (fits(home)) return { kind: "diatonic", scale: home, numeral, status: "in key" };
+
+        if (chord.quality === "maj") {
+          const target = (chord.root + 5) % 12;
+          const degree = scalePcs(home).indexOf(target);
+          const targetQuality = degree >= 0 ? KEYS[key.mode].qualities[degree] : null;
+          const scale = { tonic: target, mode: targetQuality === "maj" ? "ionian" : "harmonic" };
+          if ((targetQuality === "maj" || targetQuality === "min") && fits(scale)) {
+            const targetNumeral = roman(target, targetQuality, key);
+            const status = target === key.tonic ? "dominant" : `V/${targetNumeral}`;
+            return { kind: "secondary", scale, numeral, status, target, targetQuality, targetNumeral };
+          }
+        }
+
+        for (const mode of BORROW_ORDER[key.mode]) {
+          const scale = { tonic: key.tonic, mode };
+          if (fits(scale)) return { kind: "borrowed", scale, numeral, status: "borrowed" };
+        }
+
+        const has7 = chord.core.includes((chord.root + 10) % 12);
+        const mode = { min: "dorian", dim: "locrian", aug: "wholetone" }[chord.quality] || (has7 ? "mixolydian" : "ionian");
+        return { kind: "outside", scale: { tonic: chord.root, mode }, numeral, status: "outside key" };
+      }
+
+      function changedNotes(scale, home) {
+        const names = namesFor(scale);
+        const homeNames = namesFor(home);
+        const pcs = scalePcs(scale);
+        const homePcs = scalePcs(home);
+        const removed = homePcs.filter(h => !pcs.includes(h));
+        return pcs.filter(pc => !homePcs.includes(pc)).map(pc => {
+          const replaced = removed.find(h => homeNames[h][0] === names[pc][0])
+            ?? removed.find(h => (h - pc + 12) % 12 === 1 || (pc - h + 12) % 12 === 1);
+          return replaced === undefined ? `adds ${names[pc]}` : `${names[pc]} replaces ${homeNames[replaced]}`;
+        });
+      }
+
+      function renderBoard(scale, chordPcs, homePcs, names) {
+        fretboard.replaceChildren();
+        const pcs = scalePcs(scale);
+        STRINGS.forEach((string) => {
+          const row = document.createElement("div");
+          row.className = "neck-row";
+          row.style.gridTemplateColumns = ["38px", ...FRET_WIDTHS.map(width => `${width}fr`)].join(" ");
+          const stringName = document.createElement("span");
+          stringName.className = "string-name";
+          stringName.textContent = string.name;
+          row.append(stringName);
+          for (let fret = 0; fret <= FRETS; fret += 1) {
+            const cell = document.createElement("span");
+            cell.className = `fret-cell${fret === 0 ? " nut-fret" : ""}`;
+            const pc = (string.midi + fret) % 12;
+            if (pcs.includes(pc) || chordPcs.includes(pc)) {
+              const marker = document.createElement("span");
+              const role = pc === scale.tonic ? "root" : chordPcs.includes(pc) ? "chord" : "scale";
+              marker.className = `note-marker ${role}${homePcs.includes(pc) ? "" : " changed"}`;
+              marker.textContent = names[pc];
+              marker.title = `${names[pc]} · ${string.name} string, fret ${fret}`;
+              cell.append(marker);
+            }
+            row.append(cell);
+          }
+          fretboard.append(row);
+        });
+
+        const inlayLayer = document.createElement("div");
+        inlayLayer.setAttribute("aria-hidden", "true");
+        const firstRow = fretboard.querySelector(".neck-row");
+        const boardRect = fretboard.getBoundingClientRect();
+        const y = boardRect.height / 2;
+        const rowCells = [...firstRow.children].slice(1);
+        INLAYS.forEach((fret) => {
+          const cell = rowCells[fret];
+          if (!cell) return;
+          const rect = cell.getBoundingClientRect();
+          const dot = document.createElement("span");
+          dot.className = "board-inlay";
+          dot.style.left = `${rect.left - boardRect.left + rect.width / 2}px`;
+          dot.style.top = `${y}px`;
+          inlayLayer.append(dot);
+        });
+        fretboard.append(inlayLayer);
+
+        const numbers = document.querySelector("#fret-numbers");
+        numbers.replaceChildren(document.createElement("span"));
+        for (let fret = 0; fret <= FRETS; fret += 1) {
+          const number = document.createElement("span");
+          number.textContent = fret;
+          if (INLAYS.includes(fret)) number.className = "inlay";
+          numbers.append(number);
+        }
+        numbers.style.gridTemplateColumns = ["38px", ...FRET_WIDTHS.map(width => `${width}fr`)].join(" ");
+        fretboard.setAttribute("aria-label", `Fretboard showing ${scaleName(scale)}`);
+      }
+
+      function renderBars() {
+        barsEl.replaceChildren();
+        const tabs = [{ label: "Key", sub: scaleName(state.home) }, ...state.chords.map((chord, index) => ({
+          label: chord.label,
+          sub: `${state.analyses[index].numeral} · ${state.analyses[index].status}`,
+          outside: state.analyses[index].kind !== "diatonic"
+        }))];
+        tabs.forEach((tab, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `bar-tab${tab.outside ? " outside" : ""}`;
+          button.setAttribute("aria-pressed", String(index === selected));
+          const label = document.createElement("strong");
+          label.textContent = tab.label;
+          const sub = document.createElement("small");
+          sub.textContent = tab.sub;
+          button.append(label, sub);
+          button.addEventListener("click", () => select(index));
+          barsEl.append(button);
+        });
+      }
+
+      function select(index) {
+        selected = Math.max(0, Math.min(state.chords.length, index));
+        const homePcs = scalePcs(state.home);
+        const homeName = scaleName(state.home);
+        const info = document.querySelector("#bar-info");
+        let scale = state.home;
+        let chordPcs = [];
+        if (selected === 0) {
+          const outside = state.analyses.filter(a => a.kind !== "diatonic").length;
+          document.querySelector("#view-title").textContent = `Key · ${homeName}`;
+          info.textContent = outside
+            ? `${outside} ${outside === 1 ? "bar uses" : "bars use"} a different scale (amber). Select a bar to see it.`
+            : "Every chord fits the home key, so this scale works over the whole progression.";
+        } else {
+          const chord = state.chords[selected - 1];
+          const analysis = state.analyses[selected - 1];
+          scale = analysis.scale;
+          chordPcs = chord.core;
+          const names = namesFor(scale);
+          const name = scaleName(scale);
+          const tones = chord.core.map(pc => names[pc]).join(" ");
+          document.querySelector("#view-title").textContent = `Bar ${selected} · ${chord.label}`;
+          let text;
+          if (analysis.kind === "diatonic") {
+            text = `${chord.label} (${analysis.numeral}) is in ${homeName}. Chord tones: ${tones}.`;
+          } else if (analysis.kind === "secondary") {
+            const targetChord = names[analysis.target] + (analysis.targetQuality === "min" ? "m" : "");
+            text = `${chord.label} is the V of ${targetChord} (${analysis.targetNumeral}). Play ${name} — it pulls toward ${targetChord}. Chord tones: ${tones}.`;
+          } else if (analysis.kind === "borrowed") {
+            const parallel = { aeolian: " (parallel minor)", ionian: " (parallel major)" }[scale.mode] || "";
+            text = `${chord.label} (${analysis.numeral}) is borrowed from ${name}${parallel}. Chord tones: ${tones}.`;
+          } else {
+            text = `${chord.label} is outside the key. Use its own chord scale: ${name}. Chord tones: ${tones}.`;
+          }
+          const changes = changedNotes(scale, state.home);
+          info.replaceChildren(document.createTextNode(text));
+          if (changes.length) {
+            const lineBreak = document.createElement("br");
+            const changed = document.createElement("b");
+            changed.textContent = `Change to ${homeName}: ${changes.join(", ")}.`;
+            info.append(lineBreak, changed);
+          }
+        }
+        const names = namesFor(scale);
+        document.querySelector("#board-subtitle").textContent = `${scaleName(scale)}: ${scalePcs(scale).map(pc => names[pc]).join(" ")}`;
+        renderBoard(scale, chordPcs, homePcs, names);
+        [...barsEl.children].forEach((tab, i) => tab.setAttribute("aria-pressed", String(i === selected)));
+      }
+
+      function generate() {
+        const tokens = progressionInput.value.trim().split(/[|,\s]+/).filter(Boolean);
+        const chords = tokens.map(parseChord);
+        const invalid = tokens.filter((token, index) => !chords[index]);
+        if (!tokens.length || invalid.length) {
+          errorEl.textContent = invalid.length ? `Unknown chord: ${invalid.join(", ")}` : "Enter at least one chord.";
+          return;
+        }
+        if (chords.length > 16) {
+          errorEl.textContent = "Keep it to 16 chords or fewer.";
+          return;
+        }
+        errorEl.textContent = "";
+        const detected = detectKey(chords);
+        const [tonic, mode] = keySelect.value === "auto" ? [detected.tonic, detected.mode] : keySelect.value.split(":");
+        const key = { tonic: Number(tonic), mode };
+        const home = { tonic: key.tonic, mode: HOME_MODE[key.mode] };
+        keySelect.options[0].textContent = `Auto-detect (${scaleName({ tonic: detected.tonic, mode: HOME_MODE[detected.mode] })})`;
+        state = { chords, key, home, analyses: chords.map(chord => analyze(chord, key)) };
+        document.querySelector("#key-badge").textContent = `KEY: ${namesFor(home)[key.tonic]} ${key.mode.toUpperCase()}`;
+        renderBars();
+        select(0);
+      }
+
+      document.querySelector("#generate").addEventListener("click", () => {
+        generate();
+        if (matchMedia("(orientation: landscape) and (max-height: 500px)").matches) document.querySelector(".output").scrollIntoView({ behavior: "smooth" });
+      });
+      // Inlay dots are positioned in px, so redraw after rotation/resize.
+      addEventListener("resize", () => { if (state) select(selected); });
+      keySelect.addEventListener("change", generate);
+      for (const mode of ["major", "minor"]) {
+        for (let tonic = 0; tonic < 12; tonic += 1) {
+          keySelect.add(new Option(scaleName({ tonic, mode: HOME_MODE[mode] }), `${tonic}:${mode}`));
+        }
+      }
+      document.querySelector("#example").addEventListener("click", () => {
+        exampleIndex = (exampleIndex + 1) % EXAMPLES.length;
+        progressionInput.value = EXAMPLES[exampleIndex];
+        keySelect.value = "auto";
+        generate();
+      });
+      document.addEventListener("keydown", event => {
+        if (!state || event.target.matches("textarea, input, select")) return;
+        if (event.key === "ArrowRight") select(selected + 1);
+        if (event.key === "ArrowLeft") select(selected - 1);
+      });
+      generate();
+    })();
+  </script>
+</body>
+</html>
