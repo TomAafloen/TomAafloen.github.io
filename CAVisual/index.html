@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/CAVisual/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cavisual</title>
+    <script type="module" crossorigin src="/CAVisual/assets/index-5oV6jOkG.js"></script>
+    <link rel="stylesheet" crossorigin href="/CAVisual/assets/index-DjXFDHIv.css">
+  </head>
+  <body>
+    <div id="root">
+      <div class="boot-status">
+        <h1>Loading Conditional Access Visualizer...</h1>
+        <p>If this stays blank, there is a browser-side startup error.</p>
+      </div>
+    </div>
+    <script>
+      // Runs synchronously before any module loads.
+      // Marks each phase so we know exactly how far execution reaches.
+      window.__caPhase = function(label) {
+        console.log('[CAVisual boot]', label)
+        document.title = 'CAVisual: ' + label
+      }
+      window.__caPhase('html-parsed')
+      window.addEventListener('error', function(e) {
+        document.body.innerHTML = '<div class="boot-error" style="max-width:840px;margin:48px auto;padding:24px;border:1px solid #f00;border-radius:20px;font-family:sans-serif"><h1 style="color:#b91c1c">Startup error</h1><p><b>' + (e.filename||'') + ' line ' + e.lineno + ':</b></p><p>' + e.message + '</p></div>'
+      })
+      window.addEventListener('unhandledrejection', function(e) {
+        document.body.innerHTML = '<div class="boot-error" style="max-width:840px;margin:48px auto;padding:24px;border:1px solid #f00;border-radius:20px;font-family:sans-serif"><h1 style="color:#b91c1c">Unhandled rejection</h1><p>' + String(e.reason) + '</p></div>'
+      })
+    </script>
+  </body>
+</html>
